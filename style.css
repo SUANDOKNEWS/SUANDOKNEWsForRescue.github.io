@@ -1,0 +1,708 @@
+// Function to update advice based on total score
+function updateAdvice(total, hasRedScore) {
+    const adviceElement = document.getElementById('advice');
+    let advice = '';
+    let className = '';
+
+    if (hasRedScore) {
+        advice = 'ตรวจพบ RED Score คะแนนแดง - ต้องได้รับการดูแลอย่างเร่งด่วน คะแนนแดง';
+        className = 'red-alert';
+    } else if (total >= 7) {
+        advice = 'คะแนนสูง - Emergent ฉุกเฉิน';
+        className = 'high-score';
+    } else if (total >= 5) {
+        advice = 'คะแนนปานกลาง - Urgent เร่งด่วน';
+        className = 'medium-score';
+    } else if (total >= 3) {
+        advice = 'คะแนนต่ำ-ปานกลาง - Less Urgent เร่งด่วนน้อย';
+        className = 'low-medium-score';
+    } else {
+        advice = 'คะแนนต่ำ - Non Urgent ไม่เร่งด่วน';
+        className = 'low-score';
+    }
+
+    adviceElement.textContent = advice;
+    adviceElement.className = className;
+}body {
+  font-family: 'Sarabun', Arial, sans-serif;
+  background-// Global variables to store selected values
+    let scores = {
+        respiratory: null,
+        oxygen: null,
+        supp_oxygen: null,
+        temperature: null,
+        bp: null,
+        heart_rate: null,
+        avpu: null
+    };
+
+    let selectedValues = {
+        gender: null,
+        age: null
+    };
+
+    // Function to handle option selection for scoring parameters
+    function selectOption(category, score, button) {
+        // Remove active class from all buttons in this category
+        const categoryButtons = document.querySelectorAll(`#${category} button`);
+        categoryButtons.forEach(btn => btn.classList.remove('active'));
+
+        // Add active class to selected button
+        button.classList.add('active');
+
+        // Store the score
+        if (category === 'gender' || category === 'age') {
+            selectedValues[category] = button.textContent.trim();
+        } else {
+            scores[category] = score;
+        }
+
+        // Update total score
+        updateTotalScore();
+    }
+
+    // Function to handle oxygen scale selection
+    function selectOxygenOption(scale, score, button) {
+        // Remove active class from all oxygen buttons
+        const allOxygenButtons = document.querySelectorAll('#oxygen_scale1 button, #oxygen_scale2 button');
+        allOxygenButtons.forEach(btn => btn.classList.remove('active'));
+
+        // Add active class to selected button
+        button.classList.add('active');
+
+        // Store the score for oxygen
+        scores.oxygen = score;
+
+        // Update total score
+        updateTotalScore();
+    }
+
+    // Function to calculate and update total score
+    function updateTotalScore() {
+        let total = 0;
+        let hasRedScore = false;
+
+        // Calculate total from all scores
+        Object.values(scores).forEach(score => {
+            if (score !== null) {
+                total += score;
+                if (score === 3) {
+                    hasRedScore = true;
+                }
+            }
+        });
+
+        // Update total score display
+        document.getElementById('totalScore').textContent = total;
+
+        // Update advice based on score (only if form is complete)
+        if (isFormComplete()) {
+            updateAdvice(total, hasRedScore);
+        } else {
+            const adviceElement = document.getElementById('advice');
+            adviceElement.textContent = 'กรุณาเลือกให้ครบทุกข้อเพื่อดูคำแนะนำ';
+            adviceElement.className = 'incomplete';
+        }
+
+        // Enable/disable save button based on completion
+        const saveButton = document.getElementById('saveButton');
+        if (saveButton) {
+            saveButton.disabled = !isFormComplete();
+            saveButton.style.opacity = isFormComplete() ? '1' : '0.5';
+        }
+    }
+
+    // Function to update advice based on total score
+    function updateAdvice(total, hasRedScore) {
+        const adviceElement = document.getElementById('advice');
+        let advice = '';
+        let className = '';
+
+        if (hasRedScore) {
+            advice = 'ตรวจพบ RED Score คะแนนแดง - ต้องได้รับการดูแลอย่างเร่งด่วน';
+            className = 'red-alert';
+        } else if (total >= 7) {
+            advice = 'คะแนนสูง - Emergent ฉุกเฉิน';
+            className = 'high-score';
+        } else if (total >= 5) {
+            advice = 'คะแนนปานกลาง - Urgent เร่งด่วน';
+            className = 'medium-score';
+        } else if (total >= 3) {
+            advice = 'คะแนนต่ำ-ปานกลาง - Less Urgent เร่งด่วนน้อย';
+            className = 'low-medium-score';
+        } else {
+            advice = 'คะแนนต่ำ - Non Urgent ไม่เร่งด่วน';
+            className = 'low-score';
+        }
+
+        adviceElement.textContent = advice;
+        adviceElement.className = className;
+    }
+
+    // Function to reset all scores
+    function resetScores() {
+        // Reset all scores
+        scores = {
+            respiratory: null,
+            oxygen: null,
+            supp_oxygen: null,
+            temperature: null,
+            bp: null,
+            heart_rate: null,
+            avpu: null
+        };
+
+        // Reset selected values
+        selectedValues = {
+            gender: null,
+            age: null
+        };
+
+        // Remove active class from all buttons
+        const allButtons = document.querySelectorAll('button');
+        allButtons.forEach(button => {
+            if (button.id !== 'resetButton') {
+                button.classList.remove('active');
+            }
+        });
+
+        // Reset total score display
+        document.getElementById('totalScore').textContent = '0';
+
+        // Reset advice
+        const adviceElement = document.getElementById('advice');
+        adviceElement.textContent = '';
+        adviceElement.className = '';
+    }
+
+    // Function to check if all required fields are completed
+    function isFormComplete() {
+        // Check gender and age
+        if (!selectedValues.gender || !selectedValues.age) {
+            return false;
+        }
+
+        // Check all scoring parameters are selected
+        const requiredScores = ['respiratory', 'oxygen', 'supp_oxygen', 'temperature', 'bp', 'heart_rate', 'avpu'];
+        for (let category of requiredScores) {
+            if (scores[category] === null) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // Function to save data to statistics table
+    function saveToStatistics() {
+        // Check if all required fields are completed
+        if (!isFormComplete()) {
+            alert('กรุณาเลือกให้ครบทุกข้อก่อนบันทึกข้อมูล (เพศ, อายุ และการประเมินทุกข้อ)');
+            return;
+        }
+
+        // Calculate total score
+        let total = 0;
+        Object.values(scores).forEach(score => {
+            if (score !== null) {
+                total += score;
+            }
+        });
+
+        // Get current date and time
+        const now = new Date();
+        const dateTime = now.toLocaleString('th-TH');
+
+        // Add row to statistics table
+        const tableBody = document.getElementById('statisticsBody');
+        const newRow = tableBody.insertRow(0);
+
+        // Add cells with data
+        newRow.insertCell(0).textContent = selectedValues.gender;
+        newRow.insertCell(1).textContent = selectedValues.age;
+        newRow.insertCell(2).textContent = total;
+        newRow.insertCell(3).textContent = dateTime;
+
+        // Optional: Save to localStorage for persistence
+        saveToLocalStorage();
+
+        // Show success message
+        alert('บันทึกข้อมูลเรียบร้อยแล้ว');
+    }
+
+    // Function to save data to localStorage
+    function saveToLocalStorage() {
+        const data = {
+            gender: selectedValues.gender,
+            age: selectedValues.age,
+            scores: scores,
+            totalScore: Object.values(scores).reduce((sum, score) => sum + (score || 0), 0),
+            timestamp: new Date().toISOString()
+        };
+
+        // Get existing data
+        let savedData = JSON.parse(localStorage.getItem('newsStatistics') || '[]');
+
+        // Add new data
+        savedData.unshift(data);
+
+        // Keep only last 50 records
+        if (savedData.length > 50) {
+            savedData = savedData.slice(0, 50);
+        }
+
+        // Save back to localStorage
+        localStorage.setItem('newsStatistics', JSON.stringify(savedData));
+    }
+
+    // Function to load data from localStorage on page load
+    function loadFromLocalStorage() {
+        const savedData = JSON.parse(localStorage.getItem('newsStatistics') || '[]');
+        const tableBody = document.getElementById('statisticsBody');
+
+        savedData.forEach(record => {
+            const newRow = tableBody.insertRow();
+            newRow.insertCell(0).textContent = record.gender;
+            newRow.insertCell(1).textContent = record.age;
+            newRow.insertCell(2).textContent = record.totalScore;
+            newRow.insertCell(3).textContent = new Date(record.timestamp).toLocaleString('th-TH');
+        });
+    }
+
+    // Add save button functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load saved data when page loads
+        loadFromLocalStorage();
+
+        // Add save button if it doesn't exist
+        const buttonContainer = document.querySelector('.button-container');
+        if (buttonContainer && !document.getElementById('saveButton')) {
+            const saveButton = document.createElement('button');
+            saveButton.id = 'saveButton';
+            saveButton.textContent = 'บันทึกข้อมูล';
+            saveButton.onclick = saveToStatistics;
+            saveButton.disabled = true;
+            saveButton.style.opacity = '0.5';
+            buttonContainer.appendChild(saveButton);
+        }
+    });
+
+    // Legacy functions for backwards compatibility
+    function checkVital(id, min, max) {
+        const input = document.getElementById(id);
+        const value = parseFloat(input.value);
+        const button = input.nextElementSibling.nextElementSibling;
+
+        if (value >= min && value <= max) {
+            button.style.backgroundColor = 'pink';
+        } else {
+            button.style.backgroundColor = 'red';
+        }
+    }
+
+    function checkBP() {
+        const input = document.getElementById('bp');
+        const values = input.value.split('/');
+        const button = input.nextElementSibling.nextElementSibling;
+
+        if (values.length === 2) {
+            const systolic = parseInt(values[0]);
+            const diastolic = parseInt(values[1]);
+
+            if (systolic >= 90 && systolic <= 120 && diastolic >= 60 && diastolic <= 80) {
+                button.style.backgroundColor = 'pink';
+            } else {
+                button.style.backgroundColor = 'red';
+            }
+        }
+    }: #f5f7fa;
+  margin: 0;
+  padding: 0;
+  color: #444;
+}
+
+.container {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  margin: 20px auto;
+  width: 90%;
+  max-width: 800px;
+}
+
+h1 {
+  color: #333;
+  text-align: center;
+  font-size: 2em;
+  margin-bottom: 5px;
+  letter-spacing: -0.5px;
+}
+
+h2 {
+  color: #333;
+  text-align: center;
+  font-size: 1.5em;
+  margin-top: 30px;
+  letter-spacing: -0.3px;
+}
+
+p {
+  text-align: center;
+  color: #666;
+  margin-top: 0;
+  margin-bottom: 30px;
+}
+
+.question {
+  margin: 25px 0;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 20px;
+}
+
+.question p {
+  text-align: left;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 15px;
+  font-size: 1.2em;
+}
+
+.scale-section {
+  margin: 15px 0;
+  padding: 15px;
+  background-color: #fafbfc;
+  border-radius: 8px;
+  border: 1px solid #e1e4e8;
+}
+
+.scale-title {
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 10px !important;
+  font-size: 1.1em !important;
+  text-align: left !important;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 8px;
+  padding-bottom: 5px;
+}
+
+button {
+  background-color: #f5f7fa;
+  color: #444;
+  border: 1px solid #e1e4e8;
+  padding: 8px 12px;
+  margin: 2px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-family: 'Sarabun', Arial, sans-serif;
+  font-weight: 500;
+  font-size: 0.95em;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  flex: 0 1 auto;
+}
+
+button:hover {
+  background-color: #e9ecef;
+  transform: translateY(-1px);
+}
+
+button.selected {
+  background-color: #4CAF50; /* More vibrant green color */
+  color: white;
+  border-color: #388E3C; /* Darker green for border */
+  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
+}
+
+.score {
+  display: inline-block;
+  margin-left: 6px;
+  font-weight: bold;
+  font-size: 0.85em;
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+.score-0 {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.score-1 {
+  background-color: #fff8e1;
+  color: #ff8f00;
+}
+
+.score-2 {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
+
+.score-3 {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+#totalScore {
+  font-weight: bold;
+  font-size: 1.3em;
+  color: #3182ce;
+}
+
+#advice {
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.1em;
+  margin-top: 15px;
+  padding: 18px;
+  border-radius: 8px;
+  background-color: #f8fafc;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  line-height: 1.5;
+  color: #e65100; /* Darker orange */
+}
+
+.red-score-alert {
+  background-color: #fff5f5;
+  border-left: 4px solid #e53e3e;
+  border-radius: 6px;
+  padding: 15px;
+  margin-top: 15px;
+  font-weight: 600;
+  color: #c53030;
+  animation: subtle-pulse 2s infinite;
+}
+
+@keyframes subtle-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(229, 62, 62, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(229, 62, 62, 0);
+  }
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+#resetButton {
+  display: inline-block;
+  margin: 0 10px;
+  padding: 12px 25px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1em;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#resetButton:hover {
+  background-color: #d32f2f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#submitButton {
+  display: inline-block;
+  margin: 0 10px;
+  padding: 12px 25px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1em;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#submitButton:hover {
+  background-color: #388E3C;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.delete-btn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  width: 25px;
+  height: 25px;
+  line-height: 1;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.delete-btn:hover {
+  background-color: #d32f2f;
+  transform: scale(1.1);
+}
+
+/* สไตล์สำหรับช่องกรอก HN */
+#hnInput {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  font-family: 'Sarabun', Arial, sans-serif;
+  font-size: 1em;
+  margin-bottom: 15px;
+}
+
+/* สไตล์สำหรับคำแนะนำการพยาบาล */
+.nursing-care-container {
+    margin: 30px 0;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.nursing-care-container h3 {
+    text-align: center;
+    color: #2d3748;
+    margin-bottom: 20px;
+}
+
+.care-instructions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 10px;
+}
+
+.care-level.red-alert {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 768px) {
+    .care-instructions {
+        grid-template-columns: 1fr;
+    }
+}
+
+.care-level {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.care-level h4 {
+    color: #2d3748;
+    margin: 0 0 10px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.care-level p {
+    margin: 8px 0;
+    color: #4a5568;
+    text-align: left;
+    font-size: 0.95em;
+}
+
+.care-level.red-alert {
+    border-left: 4px solid #c53030;
+    background-color: #fff5f5;
+}
+
+.care-level.red-alert h4 {
+    color: #c53030;
+}
+
+/* สไตล์สำหรับตารางสถิติ */
+.statistics-container {
+  margin-top: 30px;
+  border-top: 1px solid #e1e4e8;
+  padding-top: 20px;
+}
+
+.statistics-container h3 {
+  text-align: center;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+#statisticsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+#statisticsTable th, 
+#statisticsTable td {
+  padding: 12px 15px;
+  text-align: center;
+  border-bottom: 1px solid #e1e4e8;
+}
+
+#statisticsTable th {
+  background-color: #f6f8fa;
+  font-weight: 600;
+  color: #24292e;
+}
+
+#statisticsTable tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+#statisticsTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 18px;
+  }
+
+  button {
+    font-size: 0.9em;
+    padding: 10px 14px;
+    width: calc(50% - 15px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #resetButton {
+    width: auto;
+    display: block;
+  }
+
+  .options {
+    justify-content: space-between;
+  }
+
+  #statisticsTable th,
+  #statisticsTable td {
+    padding: 8px 10px;
+    font-size: 0.9em;
+  }
+}
