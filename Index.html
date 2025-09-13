@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>National Early Warning Score (NEWS) - SUANDOK</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <h1>SUANDOK NEWs For Rescue</h1>
+        <p>National Early Warning Score - สัญญาณเตือนภาวะวิกฤต</p>
+
+        <div class="question">
+            <p><strong>เพศ</strong></p>
+            <div class="options" id="gender">
+                <button onclick="selectOption('gender', 0, this)">ชาย</button>
+                <button onclick="selectOption('gender', 0, this)">หญิง</button>
+            </div>
+        </div>
+
+        <div class="question">
+            <p><strong>อายุ (ปี)</strong></p>
+            <div class="options" id="age">
+                <button onclick="selectOption('age', 0, this)">น้อยกว่า 18</button>
+                <button onclick="selectOption('age', 0, this)">20-30</button>
+                <button onclick="selectOption('age', 0, this)">40-50</button>
+                <button onclick="selectOption('age', 0, this)">60-70</button>
+                <button onclick="selectOption('age', 0, this)">มากกว่า 80</button>
+            </div>
+        </div>
+
+        <div class="question">
+            <p><strong>อัตราการหายใจ (ครั้ง/นาที)</strong></p>
+            <div class="options" id="respiratory">
+                <button onclick="selectOption('respiratory', 3, this)">≤8 <span class="score score-3">+3</span></button>
+                <button onclick="selectOption('respiratory', 1, this)">9-11 <span
+                        class="score score-1">+1</span></button>
+                <button onclick="selectOption('respiratory', 0, this)">12-20 <span
+                        class="score score-0">0</span></button>
+                <button onclick="selectOption('respiratory', 2, this)">21-24 <span
+                        class="score score-2">+2</span></button>
+                <button onclick="selectOption('respiratory', 3, this)">≥25 <span
+                        class="score score-3">+3</span></button>
+            </div>
+        </div>
+
+        <div class="question">
+            <p><strong>ความอิ่มตัวของออกซิเจนในเลือด</strong></p>
+
+            <div class="scale-section">
+                <p class="scale-title">Scale 1:</p>
+                <div class="options" id="oxygen_scale1">
+                    <button onclick="selectOxygenOption('scale1', 3, this)">≤91% <span
+                            class="score score-3">+3</span></button>
+                    <button onclick="selectOxygenOption('scale1', 2, this)">92-93% <span
+                            class="score score-2">+2</span></button>
+                    <button onclick="selectOxygenOption('scale1', 1, this)">94-95% <span
+                            class="score score-1">+1</span></button>
+                    <button onclick="selectOxygenOption('scale1', 0, this)">≥96% <span
+                            class="score score-0">0</span></button>
+                </div>
+            </div>
+
+            <div class="scale-section">
+                <p class="scale-title">Scale 2:</p>
+                <div class="options" id="oxygen_scale2">
+                    <button onclick="selectOxygenOption('scale2', 3, this)">≤83% <span
+                            class="score score-3">+3</span></button>
+                    <button onclick="selectOxygenOption('scale2', 2, this)">84-85% <span
+                            class="score score-2">+2</span></button>
+                    <button onclick="selectOxygenOption('scale2', 1, this)">86-87% <span
+                            class="score score-1">+1</span></button>
+                    <button onclick="selectOxygenOption('scale2', 0, this)">88-92% ≥93% Air <span
+                            class="score score-0">0</span></button>
+                    <button onclick="selectOxygenOption('scale2', 1, this)">93-94% Oxygen <span
+                            class="score score-1">+1</span></button>
+                    <button onclick="selectOxygenOption('scale2', 2, this)">95-96% Oxygen <span
+                            class="score score-2">+2</span></button>
+                    <button onclick="selectOxygenOption('scale2', 3, this)">≥97% Oxygen <span
+                            class="score score-3">+3</span></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <p><strong>การใช้ออกซิเจนเสริม</strong></p>
+            <div class="options" id="supp_oxygen">
+                <button onclick="selectOption('supp_oxygen', 0, this)">ไม่มี <span
+                        class="score score-0">0</span></button>
+                <button onclick="selectOption('supp_oxygen', 2, this)">มี <span class="score score-2">+2</span></button>
+            </div>
+        </div>
+
+        <div class="question">
+            <p><strong>อุณหภูมิ</strong></p>
+            <div class="options" id="temperature">
+                <button onclick="selectOption('temperature', 3, this)">≤35°C <span
+                        class="score score-3">+3</span></button>
+                <button onclick="selectOption('temperature', 1, this)">35.1-36°C <span
+                        class="score score-1">+1</span></button>
+                <button onclick="selectOption('temperature', 0, this)">36.1-38°C <span
+                        class="score score-0">0</span></button>
+                <button onclick="selectOption('temperature', 1, this)">38.1-39°C <span
+                        class="score score-1">+1</span></button>
+                <button onclick="selectOption('temperature', 2, this)">≥39.1°C <span
+                        class="score score-2">+2</span></button>
+            </div>
+        </div>
+
+        <div class="question">
+            <p><strong>ความดันโลหิตซิสโตลิก (มม.ปรอท)</strong></p>
+            <div class="options" id="bp">
+                <button onclick="selectOption('bp', 3, this)">≤90 <span class="score score-3">+3</span></button>
+                <button onclick="selectOption('bp', 2, this)">91-100 <span class="score score-2">+2</span></button>
+                <button onclick="selectOption('bp', 1, this)">101-110 <span class="score score-1">+1</span></button>
+                <button onclick="selectOption('bp', 0, this)">111-219 <span class="score score-0">0</span></button>
+                <button onclick="selectOption('bp', 3, this)">≥220 <span class="score score-3">+3</span></button>
+            </div>
+        </div>
+
+        <div class="question">
+            <p><strong>อัตราการเต้นของหัวใจ (ครั้ง/นาที)</strong></p>
+            <div class="options" id="heart_rate">
+                <button onclick="selectOption('heart_rate', 3, this)">≤40 <span class="score score-3">+3</span></button>
+                <button onclick="selectOption('heart_rate', 1, this)">41-50 <span
+                        class="score score-1">+1</span></button>
+                <button onclick="selectOption('heart_rate', 0, this)">51-90 <span
+                        class="score score-0">0</span></button>
+                <button onclick="selectOption('heart_rate', 1, this)">91-110 <span
+                        class="score score-1">+1</span></button>
+                <button onclick="selectOption('heart_rate', 2, this)">111-130 <span
+                        class="score score-2">+2</span></button>
+                <button onclick="selectOption('heart_rate', 3, this)">≥131 <span
+                        class="score score-3">+3</span></button>
+            </div>
+        </div>
+
+        <div class="question">
+            <p><strong>ระดับความรู้สึกตัว (AVPU)</strong></p>
+            <div class="options" id="avpu">
+                <button onclick="selectOption('avpu', 0, this)">รู้สึกตัวดี (A) <span
+                        class="score score-0">0</span></button>
+                <button onclick="selectOption('avpu', 3, this)">ตอบสนองต่อเสียง ความเจ็บปวด หรือไม่ตอบสนอง (V, P, U)
+                    <span class="score score-3">+3</span></button>
+            </div>
+        </div>
+
+        <h2>คะแนนรวม: <span id="totalScore">0</span></h2>
+        <p id="advice"></p>
+        <div class="button-container">
+            <button id="resetButton" onclick="resetScores()">รีเซ็ตคะแนนทั้งหมด</button>
+        </div>
+
+        <div class="nursing-care-container">
+            <h3>คำแนะนำการพยาบาล</h3>
+            <div class="care-instructions">
+                <div class="care-level">
+                    <h4>คะแนนต่ำ (0-2): Non Urgent ไม่เร่งด่วน</h4>
+                    <p>- แนะนำขั้นตอนการปฏิบัติตัวเบื้องต้นแก่ผู้ป่วย</p>
+                    <p>- ติดตามอาการตามปกติ</p>
+                    <p>- พิจารณาส่งต่อโรงพยาบาลตามสิทธิการรักษา</p>
+                </div>
+                <div class="care-level">
+                    <h4>คะแนนต่ำ - ปานกลาง (3-4): Less Urgent เร่งด่วนน้อย</h4>
+                    <p>- ประสานงานแจ้งโรงพยาบาลเพื่อเตรียมความพร้อม</p>
+                    <p>- เฝ้าระวังอาการเปลี่ยนแปลง</p>
+                    <p>- พิจารณาส่งโรงพยาบาลภายในระยะเวลา 15 นาที</p>
+                </div>
+                <div class="care-level">
+                    <h4>คะแนนปานกลาง (5-6): Urgent เร่งด่วน</h4>
+                    <p>- เฝ้าระวังอาการเปลี่ยนแปลงของผู้ป่วยอย่างใกล้ชิด</p>
+                    <p>- ประสานงานแจ้งโรงพยาบาลเพื่อเตรียมความพร้อม</p>
+                    <p>- พิจารณาส่งโรงพยาบาลภายในระยะเวลา 8-15 นาที</p>
+                </div>
+                <div class="care-level">
+                    <h4>คะแนนสูง (7 ขึ้นไป): Emergent ฉุกเฉิน</h4>
+                    <p>- เฝ้าระวังอาการเปลี่ยนแปลงของผู้ป่วยอย่างใกล้ชิด</p>
+                    <p>- ประสานงานแจ้งโรงพยาบาลเพื่อเตรียมความพร้อม</p>
+                    <p>- พิจารณาส่งโรงพยาบาลภายในระยะเวลา 8 นาที</p>
+                </div>
+                <div class="care-level red-alert">
+                    <h4>⚠️ กรณีพบ RED Score คะแนนแดง (คะแนนข้อใดข้อหนึ่ง +3)</h4>
+                    <p>- เฝ้าระวังอาการเปลี่ยนแปลงของผู้ป่วยอย่างใกล้ชิด</p>
+                    <p>- ประสานงานแจ้งโรงพยาบาลเพื่อเตรียมความพร้อม</p>
+                    <p>- พิจารณาส่งโรงพยาบาลภายในระยะเวลา 8 นาที</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="statistics-container">
+            <h3>ประวัติการบันทึก</h3>
+            <table id="statisticsTable">
+                <thead>
+                    <tr>
+                        <th>เพศ</th>
+                        <th>อายุ</th>
+                        <th>คะแนน</th>
+                        <th>เวลา</th>
+                    </tr>
+                </thead>
+                <tbody id="statisticsBody">
+                    <!-- ข้อมูลสถิติจะถูกเพิ่มที่นี่ด้วย JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
